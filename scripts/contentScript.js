@@ -2,6 +2,7 @@
 window.rule = "";
 window.squashCommits = true;
 window.commitID = "";
+window.convoCommitID = "";
 
 let response = { type: "", message: {} };
 
@@ -50,6 +51,9 @@ const crossCheckWithDefaults = (defaults) => {
   if (defaults.commitID !== commitID) {
     commitID = defaults.commitID;
   }
+  if (defaults.convoCommitID !== convoCommitID) {
+    convoCommitID = defaults.convoCommitID;
+  }
   modifyPageUI();
 };
 
@@ -61,7 +65,6 @@ const modifyPageUI = () => {
     [...commitAElements].forEach((aElement) => {
       const labelContent = aElement.getAttribute("aria-label");
       const commitMsg = aElement.innerHTML;
-
       if (labelContent && commitMsg) {
         if (
           (labelContent.includes(commitMsg) ||
@@ -74,7 +77,8 @@ const modifyPageUI = () => {
     });
   });
 
-  const commitDivElements = document.getElementsByClassName("commit-message");
+  
+  const commitDivElements = document.getElementsByClassName(convoCommitID);
   [...commitDivElements].forEach((divElement) => {
     const commitAElements = divElement.getElementsByTagName("a");
     [...commitAElements].forEach((aElement) => {
