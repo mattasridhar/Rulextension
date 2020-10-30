@@ -65,7 +65,7 @@ const captureExtensionEvents = () => {
 
   updateBtn.addEventListener("click", () => {
     const commitIDValue = commitInput.value;
-    const convoCommitIDValue = convoCommitIDValue.value;
+    const convoCommitIDValue = convoCommitInput.value;
 
     // send value to background only if value has altered
     if (commitID !== commitIDValue || convoCommitID !== convoCommitIDValue) {
