@@ -1,23 +1,28 @@
 {
-    "manifest_version": 2,
-    "name": "Rulextension",
-    "version": "0.1",
-    "web_accessible_resources": ["assets/*.png", "assets/*.gif"],
-    "icons": {
-        "16": "assets/favicon16.png",
-        "48": "assets/favicon48.png",
-        "128": "assets/favicon128.png"
-    },
-    "content_scripts": [{
-        "matches": ["https://github-lvs.corpzone.internalzone.com/mcafee/*"],
-        "js": ["scripts/contentScript.js"]
-    }],
-    "background": {
-        "scripts": ["scripts/backgroundScript.js"]
-    },
-    "browser_action": {
-        "default_icon": "assets/favicon128.png",
-        "default_popup": "pages/default.html"
-    },
-    "permissions": ["tabs"]
+  "manifest_version": 2,
+  "name": "Rulextension",
+  "version": "0.1",
+  "web_accessible_resources": ["assets/*.png", "assets/*.gif"],
+  "icons": {
+    "16": "assets/favicon16.png",
+    "48": "assets/favicon48.png",
+    "128": "assets/favicon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github-lvs.corpzone.internalzone.com/mcafee/*",
+        "https://*.github.com/*"
+      ],
+      "js": ["scripts/contentScript.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["scripts/backgroundScript.js"]
+  },
+  "browser_action": {
+    "default_icon": "assets/favicon128.png",
+    "default_popup": "pages/default.html"
+  },
+  "permissions": ["tabs"]
 }

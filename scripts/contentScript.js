@@ -93,11 +93,10 @@ const modifyPageUI = () => {
     });
   });
 
-  if (squashCommits) {
-    const mergeArea = document.getElementsByClassName("merge-message");
-    console.log("SRI merge: ", mergeArea[0]);
-    mergeArea[0].style.border = "thick solid #FC9003";
-    mergeArea[0].style.background = "#FFD875";
+  const mergeArea = document.getElementsByClassName("merge-message")[0];
+  if (squashCommits && mergeArea) {
+    mergeArea.style.border = "thick solid #FC9003";
+    mergeArea.style.background = "#FFD875";
   }
 };
 
