@@ -1,6 +1,6 @@
 // defaults
 window.rule = "";
-window.squashCommits = false;
+window.squashCommits = true;
 window.commitID = "";
 
 let response = { type: "", message: {} };
@@ -55,12 +55,32 @@ const crossCheckWithDefaults = (defaults) => {
 
 // check Page contents for the rules and take the action
 const modifyPageUI = () => {
-  const commitDivElements = document.getElementsByClassName(commitID);
-  [...commitDivElements].forEach((divElement) => {
-    const commitAElements = divElement.getElementsByTagName("a");
+  const commitLiElements = document.getElementsByClassName(commitID);
+  [...commitLiElements].forEach((liElement) => {
+    const commitAElements = liElement.getElementsByTagName("a");
     [...commitAElements].forEach((aElement) => {
       const labelContent = aElement.getAttribute("aria-label");
       const commitMsg = aElement.innerHTML;
+
+      if (labelContent && commitMsg) {
+        if (
+          (labelContent.includes(commitMsg) ||
+            commitMsg.includes(labelContent)) &&
+          !commitMsg.toLowerCase().includes(rule.toLowerCase())
+        ) {
+          liElement.style.border = "thick solid #FF0000";
+        }
+      }
+    });
+  });
+
+  const commitDivElements = document.getElementsByClassName("commit-message");
+  [...commitDivElements].forEach((divElement) => {
+    const commitAElements = divElement.getElementsByTagName("a");
+    [...commitAElements].forEach((aElement) => {
+      const labelContent = aElement.getAttribute("title");
+      const commitMsg = aElement.innerHTML;
+
       if (labelContent && commitMsg) {
         if (
           (labelContent.includes(commitMsg) ||
@@ -72,6 +92,13 @@ const modifyPageUI = () => {
       }
     });
   });
+
+  if (squashCommits) {
+    const mergeArea = document.getElementsByClassName("merge-message");
+    console.log("SRI merge: ", mergeArea[0]);
+    mergeArea[0].style.border = "thick solid #FC9003";
+    mergeArea[0].style.background = "#FFD875";
+  }
 };
 
 // perform action only when the extension is clicked and the desired message is obtained from backgroundScript

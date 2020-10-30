@@ -15,135 +15,134 @@ const updateBtn = document.getElementById("update");
 
 // defaults
 window.rule = "";
-window.squashCommits = false;
+window.squashCommits = true;
 window.commitID = "";
 
 let response = { type: "", message: {} };
 
 // Send the readyness of the Extension DOM and listen to the events
 const extensionReady = () => {
-  console.log("SRI Extension Ready: ");
-  response.type = "extensionLoaded";
-  response.message = {};
-  // sendValueToContentScript(response);
-  sendValueToBackgroundScript(response);
-  captureExtensionEvents();
+    response.type = "extensionLoaded";
+    response.message = {};
+    // sendValueToContentScript(response);
+    sendValueToBackgroundScript(response);
+    captureExtensionEvents();
 };
 
 // Capture and handle the different events happening in the Popup UI
 const captureExtensionEvents = () => {
-  settingsBtn.addEventListener("click", () => {
-    settingsBtn.style.display = "none";
-    contentDiv.style.display = "none";
-    squashCommitsContentDiv.style.display = "none";
-    settingsContentDiv.style.display = "flex";
-  });
+    settingsBtn.addEventListener("click", () => {
+        settingsBtn.style.display = "none";
+        contentDiv.style.display = "none";
+        squashCommitsContentDiv.style.display = "none";
+        settingsContentDiv.style.display = "flex";
+    });
 
-  backBtn.addEventListener("click", () => {
-    settingsBtn.style.display = "block";
-    contentDiv.style.display = "flex";
-    squashCommitsContentDiv.style.display = "flex";
-    settingsContentDiv.style.display = "none";
-  });
+    backBtn.addEventListener("click", () => {
+        settingsBtn.style.display = "block";
+        contentDiv.style.display = "flex";
+        squashCommitsContentDiv.style.display = "flex";
+        settingsContentDiv.style.display = "none";
+    });
 
-  submitBtn.addEventListener("click", () => {
-    const ruleValue = ruleInput.value;
-    const chkStatus = squashCommitsChk.checked;
+    submitBtn.addEventListener("click", () => {
+        const ruleValue = ruleInput.value;
+        const chkStatus = squashCommitsChk.checked;
 
-    // send value to background only if value has altered
-    if (rule !== ruleValue || squashCommits !== chkStatus) {
-      response.type = "ruleUpdated";
-      response.message = {
-        rule: ruleValue,
-        squashCommits: chkStatus,
-      };
-      sendValueToBackgroundScript(response);
-    }
-  });
+        // send value to background only if value has altered
+        if (rule !== ruleValue || squashCommits !== chkStatus) {
+            response.type = "ruleUpdated";
+            response.message = {
+                rule: ruleValue,
+                squashCommits: chkStatus,
+            };
+            sendValueToBackgroundScript(response);
+        }
+    });
 
-  updateBtn.addEventListener("click", () => {
-    const commitIDValue = commitInput.value;
+    updateBtn.addEventListener("click", () => {
+        const commitIDValue = commitInput.value;
 
-    // send value to background only if value has altered
-    if (commitID !== commitIDValue) {
-      response.type = "commitIDUpdated";
-      response.message = {
-        commitID: commitIDValue,
-      };
-      sendValueToBackgroundScript(response);
-    }
-  });
+        // send value to background only if value has altered
+        if (commitID !== commitIDValue) {
+            response.type = "commitIDUpdated";
+            response.message = {
+                commitID: commitIDValue,
+            };
+            sendValueToBackgroundScript(response);
+        }
+    });
 };
 
 // For handling the sending and receiving of the background messages
 const sendValueToBackgroundScript = (respToBg) => {
-  // Sending and waiting for response from Background
-  chrome.runtime.sendMessage(respToBg, function (response) {
-    // Listening to response from background Script
-    handleResponseFromBackground(response);
-  });
+    // Sending and waiting for response from Background
+    chrome.runtime.sendMessage(respToBg, function(response) {
+        // Listening to response from background Script
+        handleResponseFromBackground(response);
+    });
 };
 
 // Handle th response received from the background script
 const handleResponseFromBackground = (backgroundResponse) => {
-  switch (backgroundResponse.type) {
-    case "bgDefaults":
-      if (backgroundResponse.message.rule !== rule) {
-        rule = backgroundResponse.message.rule;
-      }
-      if (backgroundResponse.message.squashCommits !== squashCommits) {
-        squashCommits = backgroundResponse.message.squashCommits;
-      }
-      if (backgroundResponse.message.commitID !== commitID) {
-        commitID = backgroundResponse.message.commitID;
-      }
-      setDefaultValues();
-      break;
-    case "defaultsUpdated":
-      rule = backgroundResponse.message.rule;
-      squashCommits = backgroundResponse.message.squashCommits;
-      response.type = "ruleUpdated";
-      response.message = {
-        rule,
-        squashCommits,
-      };
-      // send the updated values to content script
-      sendValueToContentScript(response);
-      break;
-    case "defaultsCommitIDUpdated":
-      commitID = backgroundResponse.message.commitID;
-      response.type = "commitIDUpdated";
-      response.message = {
-        commitID,
-      };
-      // send the updated values to content script
-      sendValueToContentScript(response);
-      break;
-    default:
-      break;
-  }
+    switch (backgroundResponse.type) {
+        case "bgDefaults":
+            if (backgroundResponse.message.rule !== rule) {
+                rule = backgroundResponse.message.rule;
+            }
+            if (backgroundResponse.message.squashCommits !== squashCommits) {
+                squashCommits = backgroundResponse.message.squashCommits;
+            }
+            if (backgroundResponse.message.commitID !== commitID) {
+                commitID = backgroundResponse.message.commitID;
+            }
+            setDefaultValues();
+            break;
+        case "defaultsUpdated":
+            rule = backgroundResponse.message.rule;
+            squashCommits = backgroundResponse.message.squashCommits;
+            response.type = "ruleUpdated";
+            response.message = {
+                rule,
+                squashCommits,
+            };
+            // send the updated values to content script
+            sendValueToContentScript(response);
+            break;
+        case "defaultsCommitIDUpdated":
+            commitID = backgroundResponse.message.commitID;
+            response.type = "commitIDUpdated";
+            response.message = {
+                commitID,
+            };
+            // send the updated values to content script
+            sendValueToContentScript(response);
+            break;
+        default:
+            break;
+    }
 };
 
 // set the default values
 const setDefaultValues = () => {
-  if (rule !== "") {
-    ruleInput.value = rule;
-  }
-  squashCommitsChk.checked = squashCommits;
-  if (commitID !== "") {
-    commitInput.value = commitID;
-  }
+    if (rule !== "") {
+        ruleInput.value = rule;
+    }
+    squashCommitsChk.checked = squashCommits;
+    if (commitID !== "") {
+        commitInput.value = commitID;
+    }
 };
 
 // For sending updated values to content script
 const sendValueToContentScript = (respToContent) => {
-  const params = {
-    active: true,
-    currentWindow: true,
-  };
-  chrome.tabs.query(params, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, respToContent);
-  });
+    const params = {
+        active: true,
+        currentWindow: true,
+    };
+    chrome.tabs.query(params, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, respToContent);
+    });
 };
 
 document.addEventListener("DOMContentLoaded", extensionReady, false);
