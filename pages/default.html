@@ -4,25 +4,24 @@
     <title>
         <h3>Rulextension</h3>
     </title>
-    <!-- P5 JS -->
-    <script src="../libScripts/p5/p5.js" type="text/javascript"></script>
-
-    <!-- My Styles -->
-    <link rel="stylesheet" href="../customStyles/myStyles.css">
+    <!-- Extension Popup UI Styles -->
+    <link rel="stylesheet" href="../customStyles/extensionUIStyles.css">
 </head>
 
 <body>
     <div id="header">
         <h2>Rulextension </h2>
         <img id="settingsBtn" src="../assets/settingsGIF.gif" type="button"></img>
+        <img src="../assets/returnBtn.png" id="backBtn" type="button"></img>
     </div>
     <div id='content'>
         <h3>Rule: </h3> &nbsp; <input id="rule" placeholder="Type your rule here!"></input>
         <br />
+        <img src="../assets/saveBtn.png" id="submit" type="button"></img>
     </div>
-    <div id="mergeContent">
-        <input type="checkbox" id="merge">
-        <h3>Merge Commits? </h3> </input>
+    <div id="squashCommitsContent">
+        <input type="checkbox" id="squashCommits">
+        <h3>Squash Commits? </h3> </input>
     </div>
     <div id='settingsContent'>
         <div>
@@ -30,9 +29,8 @@
         </div>
         <img src="../assets/saveBtn.png" id="update" type="button"></img>
     </div>
-    <!-- My handler script -->
-    <!-- <script src="../scripts/pageScript.js" type="text/javascript"></script> -->
-    <script src="../scripts/pageScript.js" type="module"></script>
+    <!-- Extension Popup UI handler script -->
+    <script src="../scripts/pageScript.js" type="text/javascript"></script>
 
 </body>
 

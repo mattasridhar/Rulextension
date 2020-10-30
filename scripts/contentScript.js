@@ -1,19 +1,17 @@
 // defaults
 window.rule = "";
-window.merge = false;
+window.squashCommits = false;
 window.commitID = "";
 
 let response = { type: "", message: {} };
 
 // Content Loaded
 const pageLoaded = () => {
-  console.log("SRIDHAR");
   sendValueToBackgroundScript(`pageLoaded`);
 };
 
 // For handling the sending and receiving of the background messages
 const sendValueToBackgroundScript = (type, inputValue) => {
-  // console.log("SRI sending value to BackgroundScript: ", inputValue);
   let messageContent = {
     type,
     message: inputValue,
@@ -21,51 +19,65 @@ const sendValueToBackgroundScript = (type, inputValue) => {
   // Sending and waiting for response from Background
   chrome.runtime.sendMessage(messageContent, function (response) {
     // Listening to response from background Script
-    handleResponseFromBackground(response);
+    handleMsgFromOtherScripts(response);
   });
 };
 
-const handleResponseFromBackground = (backgroundResponse) => {
-  console.log("SRI contentResp frm BG: ", backgroundResponse);
-  switch (backgroundResponse.type) {
+// handle the response received from PopUp script and background script
+const handleMsgFromOtherScripts = (responseToHandle) => {
+  switch (responseToHandle.type) {
     case "bgDefaults":
-      crossCheckWithDefaults(backgroundResponse.message);
+      crossCheckWithDefaults(responseToHandle.message);
+      break;
+    case "commitIDUpdated":
+    case "ruleUpdated":
+      location.reload();
+      crossCheckWithDefaults(responseToHandle.message);
       break;
     default:
       break;
   }
 };
 
-// store defaults
+// store defaults if they are different
 const crossCheckWithDefaults = (defaults) => {
-  rule = defaults.rule;
-  merge = defaults.merge;
-  commitID = defaults.commitID;
-  handlePageContents();
+  if (defaults.rule !== rule) {
+    rule = defaults.rule;
+  }
+  if (defaults.squashCommits !== squashCommits) {
+    squashCommits = defaults.squashCommits;
+  }
+  if (defaults.commitID !== commitID) {
+    commitID = defaults.commitID;
+  }
+  modifyPageUI();
 };
 
 // check Page contents for the rules and take the action
-const handlePageContents = () => {
-  const commitDivs = document.querySelectorAll("li");
-  console.log("SRI commitDivs: ", commitDivs);
+const modifyPageUI = () => {
+  const commitDivElements = document.getElementsByClassName(commitID);
+  [...commitDivElements].forEach((divElement) => {
+    const commitAElements = divElement.getElementsByTagName("a");
+    [...commitAElements].forEach((aElement) => {
+      const labelContent = aElement.getAttribute("aria-label");
+      const commitMsg = aElement.innerHTML;
+      if (labelContent && commitMsg) {
+        if (
+          (labelContent.includes(commitMsg) ||
+            commitMsg.includes(labelContent)) &&
+          !commitMsg.toLowerCase().includes(rule.toLowerCase())
+        ) {
+          divElement.style.border = "thick solid #FF0000";
+        }
+      }
+    });
+  });
 };
 
 // perform action only when the extension is clicked and the desired message is obtained from backgroundScript
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("SRI request in content: ", request);
-  if (request !== null && request.message === "SRIDHAR") {
-    let paras = document.getElementsByTagName("p");
-    for (para of paras) {
-      para.style["background-color"] = "#900223";
-      para.innerHTML = request.message;
-    }
-
-    //replacing images for FUN
-    let imgs = document.getElementsByTagName("img");
-    for (img of imgs) {
-      img.src = chrome.extension.getURL("assets/logo512.png");
-    }
-  }
+  handleMsgFromOtherScripts(request);
 });
 
-document.addEventListener("readystatechange", pageLoaded, false);
+document.addEventListener("readystatechange", pageLoaded, true);
+document.addEventListener("load", pageLoaded, true);

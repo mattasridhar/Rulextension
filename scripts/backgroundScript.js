@@ -1,37 +1,51 @@
 console.log("SRI in background");
 
 // defaults
-window.rule = "";
-window.merge = false;
+window.rule = "Update";
+window.squashCommits = false;
 window.commitID = "js-commits-list-item";
 
 let response = { type: "", message: {} };
-
-// Perform actions only when the Extension is clicked
-chrome.browserAction.onClicked.addListener((tab) => {
-  console.log("SRI Extension Clicked!");
-  let backgroundContent = {
-    message: "SRIDHAR",
-  };
-  chrome.tabs.sendMessage(tab.id, backgroundContent); //send the message to the content script
-});
 
 // Listen to messages coming from Extension page
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   handleMsgFromOtherScripts(msg, sendResponse);
 });
 
+// Handle the response from popup script and content script based on their 'type'
 const handleMsgFromOtherScripts = (msg, sendResponse) => {
-  console.log("SRI in bg onMsg: ", msg);
-
   switch (msg.type) {
     case "extensionLoaded":
     case "pageLoaded":
       response.type = "bgDefaults";
       response.message = {
-        rule: window.rule,
-        merge: window.merge,
-        commitID: window.commitID,
+        rule,
+        squashCommits,
+        commitID,
+      };
+      sendResponse(response);
+      break;
+    case "ruleUpdated":
+      if (msg.message.rule !== rule) {
+        rule = msg.message.rule;
+      }
+      if (msg.message.squashCommits !== squashCommits) {
+        squashCommits = msg.message.squashCommits;
+      }
+      response.type = "defaultsUpdated";
+      response.message = {
+        rule,
+        squashCommits,
+      };
+      sendResponse(response);
+      break;
+    case "commitIDUpdated":
+      if (msg.message.commitID !== commitID) {
+        commitID = msg.message.commitID;
+      }
+      response.type = "defaultsCommitIDUpdated";
+      response.message = {
+        commitID,
       };
       sendResponse(response);
       break;
