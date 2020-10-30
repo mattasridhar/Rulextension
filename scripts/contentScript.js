@@ -1,6 +1,6 @@
 // defaults
 window.rule = "";
-window.squashCommits = false;
+window.squashCommits = true;
 window.commitID = "";
 window.convoCommitID = "";
 
@@ -86,8 +86,7 @@ const modifyPageUI = () => {
 
       if (labelContent && commitMsg) {
         if (
-          (labelContent.includes(commitMsg) ||
-            commitMsg.includes(labelContent)) &&
+          labelContent.includes(commitMsg) &&
           !commitMsg.toLowerCase().includes(rule.toLowerCase())
         ) {
           divElement.style.border = "thick solid #FF0000";

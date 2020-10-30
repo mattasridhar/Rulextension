@@ -10,7 +10,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*.github.com/*"],
+      "matches": [
+        "https://github-lvs.corpzone.internalzone.com/mcafee/*",
+        "https://*.github.com/*"
+      ],
       "js": ["scripts/contentScript.js"]
     }
   ],
