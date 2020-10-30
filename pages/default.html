@@ -12,17 +12,23 @@
 </head>
 
 <body>
-    <div id='loader'>
-        <h2>Loading Data. Please be patient!</h2>
-        <img src="../assets/loading.gif" alt="loading" />
+    <div id="header">
+        <h2>Rulextension </h2>
+        <img id="settingsBtn" src="../assets/settingsGIF.gif" type="button"></img>
     </div>
     <div id='content'>
-        <h4>Choose your Country: </h4>
-        <select id="countriesList"></select>
-        <button id="submit" type="button">OK</button>
-
-
-        <div id="mapid"></div>
+        <h3>Rule: </h3> &nbsp; <input id="rule" placeholder="Type your rule here!"></input>
+        <br />
+    </div>
+    <div id="mergeContent">
+        <input type="checkbox" id="merge">
+        <h3>Merge Commits? </h3> </input>
+    </div>
+    <div id='settingsContent'>
+        <div>
+            <h3>New Commit tag ID: </h3> &nbsp; <input id="commitID" placeholder="Type Commit ID here!"></input>
+        </div>
+        <img src="../assets/saveBtn.png" id="update" type="button"></img>
     </div>
     <!-- My handler script -->
     <!-- <script src="../scripts/pageScript.js" type="text/javascript"></script> -->

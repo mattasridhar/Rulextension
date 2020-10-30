@@ -10,12 +10,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>", "https://*.github.com/*"],
-      "js": ["contentScripts/contentScript.js"]
+      "matches": ["https://*.github.com/*"],
+      "js": ["scripts/contentScript.js"]
     }
   ],
   "background": {
-    "scripts": ["backgroundScripts/backgroundScript.js"]
+    "scripts": ["scripts/backgroundScript.js"]
   },
   "browser_action": {
     "default_icon": "assets/favicon128.png",

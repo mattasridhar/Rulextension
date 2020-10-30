@@ -1,67 +1,80 @@
-import { MapCreator } from "./MapCreator.js";
-
 console.log("SRI in pageScript");
-const selectElement = document.getElementById("countriesList");
+// Divs
+const contentDiv = document.getElementById("content");
+const mergeContentDiv = document.getElementById("mergeContent");
+const settingsContentDiv = document.getElementById("settingsContent");
+//CheckBox
+const mergeChk = document.getElementById("merge");
+// Inputs
+const ruleInput = document.getElementById("rule");
+const commitInput = document.getElementById("commitID");
+// Buttons
+const settingsBtn = document.getElementById("settingsBtn");
+const updateBtn = document.getElementById("update");
 
-/* // Create the Map
-const createdMap = MapCreator(); */
+// defaults
+window.rule = "";
+window.merge = false;
+window.commitID = "";
+
+let response = { type: "", message: {} };
 
 // Send the readyness of the Extension DOM and listen to the events
 const extensionReady = () => {
   console.log("SRI Extension Ready: ");
-  sendValueToBackgroundScript(`extensionLoaded`);
+  // sendValueToBackgroundScript(`extensionLoaded`);
+  sendValueToContentScript(`SRIDHAR`);
   captureExtensionEvents();
 };
 
 const captureExtensionEvents = () => {
-  document.getElementById("submit").addEventListener("click", () => {
-    let selectedCountry = document.getElementById("countriesList");
-    console.log("SRI value: ", selectedCountry.value);
+  settingsBtn.addEventListener("click", () => {
+    console.log("SRI settingsClickd: ");
+    settingsBtn.style.display = "none";
+    contentDiv.style.display = "none";
+    mergeContentDiv.style.display = "none";
+    settingsContentDiv.style.display = "flex";
+  });
+
+  updateBtn.addEventListener("click", () => {
+    console.log("SRI updateClickd: ");
+    settingsBtn.style.display = "block";
+    contentDiv.style.display = "flex";
+    mergeContentDiv.style.display = "flex";
+    settingsContentDiv.style.display = "none";
+
     // sendValueToContentScript(inputValue.value);
-    sendValueToBackgroundScript(selectedCountry.value);
+    // sendValueToBackgroundScript(selectedCountry.value);
   });
 };
 
 // For handling the sending and receiving of the background messages
-const sendValueToBackgroundScript = (inputValue) => {
+const sendValueToBackgroundScript = (type, inputValue) => {
   console.log("SRI sending value to BackgroundScript: ", inputValue);
   let pageContent = {
+    type,
     message: inputValue,
-    cnt: 100,
   };
   // Sending and waiting for response from Background
-  //   chrome.runtime.sendMessage(pageContent);
   chrome.runtime.sendMessage(pageContent, function (response) {
     // Listening to response from background Script
-    // console.log("SRI in PageScript resp: ", response);
     handleResponseFromBackground(response);
   });
 };
 
 const handleResponseFromBackground = (backgroundResponse) => {
   console.log("SRI in handleBgResp: ", backgroundResponse);
-  if (backgroundResponse.countryNames.length !== 0) {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("content").style.display = "contents";
-    populateCountries(
-      backgroundResponse.countryNames,
-      backgroundResponse.countryCodes
-    );
-  } else {
-    document.getElementById("loader").style.display = "block";
-    document.getElementById("content").style.display = "none";
-    document.getElementById("mymap").style.display = "none";
-  }
-};
-
-const populateCountries = (countryNames, countryCodes) => {
-  console.log("Country Entry: ", countryNames, " Country Code: ", countryCodes);
-  for (let i = 0; i < countryNames.length; i++) {
-    const option = document.createElement("option");
-    option.value = countryNames[i].trim();
-    option.id = countryCodes[i];
-    option.text = countryNames[i].trim();
-    selectElement.appendChild(option);
+  switch (backgroundResponse.type) {
+    case "extensionLoaded":
+      response.type = msg.type;
+      response.message = {
+        rule: window.rule,
+        merge: window.merge,
+        commitID: window.commitID,
+      };
+      break;
+    default:
+      break;
   }
 };
 
