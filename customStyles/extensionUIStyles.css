@@ -49,10 +49,16 @@ body {
 }
 
 #squashCommits {
-  margin-top: 10px;
-  margin-left: 10px;
+  padding-top: 10px;
   margin-right: 10px;
-  margin-bottom: 0px;
+  float: left;
+}
+
+#squashTitle {
+  width: fit-content;
+  height: fit-content;
+  float: right;
+  margin: 0px;
 }
 
 #update,
