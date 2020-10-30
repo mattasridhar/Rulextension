@@ -16,7 +16,7 @@ const updateBtn = document.getElementById("update");
 
 // defaults
 window.rule = "";
-window.squashCommits = false;
+window.squashCommits = true;
 window.commitID = "";
 window.convoCommitID = "";
 
@@ -24,12 +24,11 @@ let response = { type: "", message: {} };
 
 // Send the readyness of the Extension DOM and listen to the events
 const extensionReady = () => {
-  console.log("SRI Extension Ready: ");
-  response.type = "extensionLoaded";
-  response.message = {};
-  // sendValueToContentScript(response);
-  sendValueToBackgroundScript(response);
-  captureExtensionEvents();
+    response.type = "extensionLoaded";
+    response.message = {};
+    // sendValueToContentScript(response);
+    sendValueToBackgroundScript(response);
+    captureExtensionEvents();
 };
 
 // Capture and handle the different events happening in the Popup UI
@@ -41,28 +40,29 @@ const captureExtensionEvents = () => {
     settingsContentDiv.style.display = "block";
   });
 
-  backBtn.addEventListener("click", () => {
-    settingsBtn.style.display = "block";
-    contentDiv.style.display = "flex";
-    squashCommitsContentDiv.style.display = "flex";
-    settingsContentDiv.style.display = "none";
-  });
+    backBtn.addEventListener("click", () => {
+        settingsBtn.style.display = "block";
+        contentDiv.style.display = "flex";
+        squashCommitsContentDiv.style.display = "flex";
+        settingsContentDiv.style.display = "none";
+    });
 
-  submitBtn.addEventListener("click", () => {
-    const ruleValue = ruleInput.value;
-    const chkStatus = squashCommitsChk.checked;
+    submitBtn.addEventListener("click", () => {
+        const ruleValue = ruleInput.value;
+        const chkStatus = squashCommitsChk.checked;
 
-    // send value to background only if value has altered
-    if (rule !== ruleValue || squashCommits !== chkStatus) {
-      response.type = "ruleUpdated";
-      response.message = {
-        rule: ruleValue,
-        squashCommits: chkStatus,
-      };
-      sendValueToBackgroundScript(response);
-    }
-  });
+        // send value to background only if value has altered
+        if (rule !== ruleValue || squashCommits !== chkStatus) {
+            response.type = "ruleUpdated";
+            response.message = {
+                rule: ruleValue,
+                squashCommits: chkStatus,
+            };
+            sendValueToBackgroundScript(response);
+        }
+    });
 
+ 
   updateBtn.addEventListener("click", () => {
     const commitIDValue = commitInput.value;
     const convoCommitIDValue = convoCommitInput.value;
@@ -81,11 +81,11 @@ const captureExtensionEvents = () => {
 
 // For handling the sending and receiving of the background messages
 const sendValueToBackgroundScript = (respToBg) => {
-  // Sending and waiting for response from Background
-  chrome.runtime.sendMessage(respToBg, function (response) {
-    // Listening to response from background Script
-    handleResponseFromBackground(response);
-  });
+    // Sending and waiting for response from Background
+    chrome.runtime.sendMessage(respToBg, function(response) {
+        // Listening to response from background Script
+        handleResponseFromBackground(response);
+    });
 };
 
 // Handle th response received from the background script
@@ -148,13 +148,13 @@ const setDefaultValues = () => {
 
 // For sending updated values to content script
 const sendValueToContentScript = (respToContent) => {
-  const params = {
-    active: true,
-    currentWindow: true,
-  };
-  chrome.tabs.query(params, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, respToContent);
-  });
+    const params = {
+        active: true,
+        currentWindow: true,
+    };
+    chrome.tabs.query(params, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, respToContent);
+    });
 };
 
 document.addEventListener("DOMContentLoaded", extensionReady, false);

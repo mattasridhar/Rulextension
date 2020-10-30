@@ -1,6 +1,6 @@
 // defaults
 window.rule = "";
-window.squashCommits = false;
+window.squashCommits = true;
 window.commitID = "";
 window.convoCommitID = "";
 
@@ -77,6 +77,7 @@ const modifyPageUI = () => {
     });
   });
 
+  
   const commitDivElements = document.getElementsByClassName(convoCommitID);
   [...commitDivElements].forEach((divElement) => {
     const commitAElements = divElement.getElementsByTagName("a");

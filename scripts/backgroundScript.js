@@ -1,9 +1,7 @@
-console.log("SRI in background");
-
 // defaults
 window.rule = "Update";
-window.squashCommits = false;
-window.commitID = "js-commits-list-item";
+window.squashCommits = true;
+window.commitID = "commit-title";
 window.convoCommitID = "js-details-container";
 
 let response = { type: "", message: {} };
