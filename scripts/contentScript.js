@@ -2,6 +2,7 @@
 window.rule = "";
 window.squashCommits = false;
 window.commitID = "";
+window.convoCommitID = "";
 
 let response = { type: "", message: {} };
 
@@ -50,17 +51,39 @@ const crossCheckWithDefaults = (defaults) => {
   if (defaults.commitID !== commitID) {
     commitID = defaults.commitID;
   }
+  if (defaults.convoCommitID !== convoCommitID) {
+    convoCommitID = defaults.convoCommitID;
+  }
   modifyPageUI();
 };
 
 // check Page contents for the rules and take the action
 const modifyPageUI = () => {
-  const commitDivElements = document.getElementsByClassName(commitID);
-  [...commitDivElements].forEach((divElement) => {
-    const commitAElements = divElement.getElementsByTagName("a");
+  const commitLiElements = document.getElementsByClassName(commitID);
+  [...commitLiElements].forEach((liElement) => {
+    const commitAElements = liElement.getElementsByTagName("a");
     [...commitAElements].forEach((aElement) => {
       const labelContent = aElement.getAttribute("aria-label");
       const commitMsg = aElement.innerHTML;
+      if (labelContent && commitMsg) {
+        if (
+          (labelContent.includes(commitMsg) ||
+            commitMsg.includes(labelContent)) &&
+          !commitMsg.toLowerCase().includes(rule.toLowerCase())
+        ) {
+          liElement.style.border = "thick solid #FF0000";
+        }
+      }
+    });
+  });
+
+  const commitDivElements = document.getElementsByClassName(convoCommitID);
+  [...commitDivElements].forEach((divElement) => {
+    const commitAElements = divElement.getElementsByTagName("a");
+    [...commitAElements].forEach((aElement) => {
+      const labelContent = aElement.getAttribute("title");
+      const commitMsg = aElement.innerHTML;
+
       if (labelContent && commitMsg) {
         if (
           (labelContent.includes(commitMsg) ||
@@ -72,6 +95,12 @@ const modifyPageUI = () => {
       }
     });
   });
+
+  const mergeArea = document.getElementsByClassName("merge-message")[0];
+  if (squashCommits && mergeArea) {
+    mergeArea.style.border = "thick solid #FC9003";
+    mergeArea.style.background = "#FFD875";
+  }
 };
 
 // perform action only when the extension is clicked and the desired message is obtained from backgroundScript

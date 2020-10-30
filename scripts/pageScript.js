@@ -7,6 +7,7 @@ const squashCommitsChk = document.getElementById("squashCommits");
 // Inputs
 const ruleInput = document.getElementById("rule");
 const commitInput = document.getElementById("commitID");
+const convoCommitInput = document.getElementById("convoCommitID");
 // Buttons
 const settingsBtn = document.getElementById("settingsBtn");
 const backBtn = document.getElementById("backBtn");
@@ -17,6 +18,7 @@ const updateBtn = document.getElementById("update");
 window.rule = "";
 window.squashCommits = false;
 window.commitID = "";
+window.convoCommitID = "";
 
 let response = { type: "", message: {} };
 
@@ -36,7 +38,7 @@ const captureExtensionEvents = () => {
     settingsBtn.style.display = "none";
     contentDiv.style.display = "none";
     squashCommitsContentDiv.style.display = "none";
-    settingsContentDiv.style.display = "flex";
+    settingsContentDiv.style.display = "block";
   });
 
   backBtn.addEventListener("click", () => {
@@ -63,12 +65,14 @@ const captureExtensionEvents = () => {
 
   updateBtn.addEventListener("click", () => {
     const commitIDValue = commitInput.value;
+    const convoCommitIDValue = convoCommitIDValue.value;
 
     // send value to background only if value has altered
-    if (commitID !== commitIDValue) {
+    if (commitID !== commitIDValue || convoCommitID !== convoCommitIDValue) {
       response.type = "commitIDUpdated";
       response.message = {
         commitID: commitIDValue,
+        convoCommitID: convoCommitIDValue,
       };
       sendValueToBackgroundScript(response);
     }
@@ -97,6 +101,9 @@ const handleResponseFromBackground = (backgroundResponse) => {
       if (backgroundResponse.message.commitID !== commitID) {
         commitID = backgroundResponse.message.commitID;
       }
+      if (backgroundResponse.message.convoCommitID !== convoCommitID) {
+        convoCommitID = backgroundResponse.message.convoCommitID;
+      }
       setDefaultValues();
       break;
     case "defaultsUpdated":
@@ -115,6 +122,7 @@ const handleResponseFromBackground = (backgroundResponse) => {
       response.type = "commitIDUpdated";
       response.message = {
         commitID,
+        convoCommitID,
       };
       // send the updated values to content script
       sendValueToContentScript(response);
@@ -132,6 +140,9 @@ const setDefaultValues = () => {
   squashCommitsChk.checked = squashCommits;
   if (commitID !== "") {
     commitInput.value = commitID;
+  }
+  if (convoCommitID !== "") {
+    convoCommitInput.value = convoCommitID;
   }
 };
 

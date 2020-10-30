@@ -4,6 +4,7 @@ console.log("SRI in background");
 window.rule = "Update";
 window.squashCommits = false;
 window.commitID = "js-commits-list-item";
+window.convoCommitID = "js-details-container";
 
 let response = { type: "", message: {} };
 
@@ -22,6 +23,7 @@ const handleMsgFromOtherScripts = (msg, sendResponse) => {
         rule,
         squashCommits,
         commitID,
+        convoCommitID,
       };
       sendResponse(response);
       break;
@@ -43,14 +45,17 @@ const handleMsgFromOtherScripts = (msg, sendResponse) => {
       if (msg.message.commitID !== commitID) {
         commitID = msg.message.commitID;
       }
+      if (msg.message.convoCommitID !== convoCommitID) {
+        convoCommitID = msg.message.convoCommitID;
+      }
       response.type = "defaultsCommitIDUpdated";
       response.message = {
         commitID,
+        convoCommitID,
       };
       sendResponse(response);
       break;
     default:
-      sendResponse({ countryNames, countryCodes });
       break;
   }
 };
