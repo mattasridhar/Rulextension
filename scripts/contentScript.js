@@ -77,7 +77,6 @@ const modifyPageUI = () => {
     });
   });
 
-  
   const commitDivElements = document.getElementsByClassName(convoCommitID);
   [...commitDivElements].forEach((divElement) => {
     const commitAElements = divElement.getElementsByTagName("a");
@@ -87,8 +86,7 @@ const modifyPageUI = () => {
 
       if (labelContent && commitMsg) {
         if (
-          (labelContent.includes(commitMsg) ||
-            commitMsg.includes(labelContent)) &&
+          labelContent.includes(commitMsg) &&
           !commitMsg.toLowerCase().includes(rule.toLowerCase())
         ) {
           divElement.style.border = "thick solid #FF0000";

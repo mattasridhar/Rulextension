@@ -1,8 +1,8 @@
 // defaults
 window.rule = "Update";
 window.squashCommits = true;
-window.commitID = "commit-title";
-window.convoCommitID = "js-details-container";
+window.commitID = "js-commits-list-item";
+window.convoCommitID = "js-commit";
 
 let response = { type: "", message: {} };
 
