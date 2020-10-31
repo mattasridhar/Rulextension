@@ -70,6 +70,10 @@ body {
   float: right;
 }
 
+img:hover {
+  cursor: pointer;
+}
+
 #sign {
   float: right;
 }
